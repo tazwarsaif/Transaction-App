@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <div class="logdiv">
+      <form action="/logout" method="post">
+        <button type="submit" class="logout">Logout</button>
+      </form>
+    </div>
+    <div class="division">
+      <div class="field">
+        <div class="headings expense">
+          <h3 class="text" class="typetitle_expense">Expense</h3>
+          <div class="showby">
+            <select
+              name="showby"
+              class="showbyexact_Expense"
+              id="showbyexact_Expense"
+            >
+              <option value="all">All</option>
+              <option value="this-week">This Week</option>
+              <option value="this-month">This Month</option>
+              <option value="this-year">This year</option>
+            </select>
+            <button type="submit" onclick="showby('Expense')">Show</button>
+          </div>
+        </div>
+        <input
+          type="hidden"
+          value="<%= JSON.stringify(transactions) %>"
+          class="change"
+        />
+
+        <div class="showvalues_Expense">
+          <% transactions.forEach(function(transaction) { if(transaction.type
+          === 'Expense') { %>
+          <div class="expense box1">
+            <div>
+              <strong>Title:</strong> <%= transaction.title %> <br />
+              <strong>Amount:</strong> <%= transaction.amount %>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="viewbtn"
+                onclick="viewTransaction(
+                      '<%= transaction.title %>',
+                      '<%= transaction.description %>',
+                      '<%= transaction.amount %>',
+                      '<%= transaction.date.toDateString() %>'
+                    )"
+              >
+                View
+              </button>
+              <button
+                type="button"
+                id="<%= transaction._id %>"
+                class="delbtn"
+                onclick="deltrans('<%= transaction._id %>')"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+          <% }}) %>
+        </div>
+
+        <!-- Modal Popup for Viewing Transaction Details -->
+        <div class="overlay" id="overlay"></div>
+        <div class="modal" id="transactionModal">
+          <button class="close-btn" onclick="closeModal()">×</button>
+          <div class="modal-header" id="modalTitle"></div>
+          <div id="modalContent"></div>
+        </div>
+      </div>
+      <div class="field">
+        <button class="toggle-btn" id="toggleFormButton">
+          Add Transaction
+        </button>
+        <div class="tform tfield tbody" id="transactionForm">
+          <form action="/tsave" method="POST">
+            <label for="Title">Transaction Title: </label>
+            <input type="text" name="title" placeholder="Title" required />
+            <label for="transactiontype">Transaction Type:</label>
+            <select name="type" id="type">
+              <option value="Expense">Expense</option>
+              <option value="Income">Income</option>
+            </select>
+            <label for="description">Description: </label>
+            <textarea
+              id="message"
+              name="description"
+              rows="4"
+              cols="50"
+              placeholder="Enter your description here..."
+            ></textarea>
+            <label for="amount">Amount: </label>
+            <input
+              type="number"
+              name="amount"
+              step="0.01"
+              placeholder="0.00"
+              min="0"
+              required
+            />
+            <label for="date">Transaction Date: </label>
+            <input type="date" name="date" required />
+            <button type="submit" class="subtn">Submit</button>
+          </form>
+        </div>
+      </div>
+      <div class="field">
+        <div class="headings income">
+          <h3 class="text">Income</h3>
+          <div class="showby">
+            <select
+              name="showby"
+              class="showbyexact_Income"
+              id="showbyexact_Income"
+            >
+              <option value="all">All</option>
+              <option value="this-week">This Week</option>
+              <option value="this-month">This Month</option>
+              <option value="this-year">This year</option>
+            </select>
+            <button type="submit" onclick="showby('Income')">Show</button>
+          </div>
+        </div>
+        <div class="showvalues_Income">
+          <% transactions.forEach(function(transaction) { if(transaction.type
+          === 'Income') { %>
+          <div class="income box2">
+            <div>
+              <strong>Title:</strong> <%= transaction.title %> <br />
+              <strong>Amount:</strong> <%= transaction.amount %>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="viewbtn"
+                onclick="viewTransaction(
+              '<%= transaction.title %>',
+              '<%= transaction.description %>',
+              '<%= transaction.amount %>',
+              '<%= transaction.date.toDateString() %>'
+            )"
+              >
+                View
+              </button>
+              <button
+                type="button"
+                id="<%= transaction._id %>"
+                class="delbtn"
+                onclick="deltrans('<%= transaction._id %>')"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+          <% }}) %>
+        </div>
+
+        <!-- Modal Popup for Viewing Transaction Details -->
+        <div class="overlay" id="overlay"></div>
+        <div class="modal" id="transactionModal">
+          <button class="close-btn" onclick="closeModal()">×</button>
+          <div class="modal-header" id="modalTitle"></div>
+          <div id="modalContent"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const toggleButton = document.getElementById("toggleFormButton");
+      const form = document.getElementById("transactionForm");
+
+      toggleButton.addEventListener("click", () => {
+        form.classList.toggle("show");
+      });
+      function viewTransaction(title, description, amount, date) {
+        document.getElementById("modalTitle").innerText = title;
+        document.getElementById("modalContent").innerHTML = `
+        <strong>Description:</strong> ${description} <br />
+        <strong>Amount:</strong> ${amount} <br />
+        <strong>Date:</strong> ${date}
+      `;
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("transactionModal").style.display = "block";
+      }
+
+      // Function to close the modal
+      function closeModal() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("transactionModal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Login</h2>
+      <% if(flaw){ %>
+      <h3 style="color: rgb(255, 122, 122)"><%= flaw %></h3>
+      <% } %>
+      <form action="/login" method="POST">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            placeholder="Enter your username"
+          />
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+        <button type="submit">Login</button>
+        <p class="register-link">
+          Don't have an account?
+          <a href="http://localhost:5000/register">Register</a>
+        </p>
+      </form>
+    </div>
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in</title>
+</head>
+<body>
+    <h1>Please log in</h1>
+    <form action="/login" method="post">
+        <input type="text" placeholder="username" name="username">
+        <input type="password" placeholder="password" name="password">
+        <button type="submit">Submit</button>
+    </form>
+    <h1>Please Register first</h1>
+    <form action="/register" method="post">
+        <input type="text" placeholder="username" name="username">
+        <input type="password" placeholder="password" name="password">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html> -->
